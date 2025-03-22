@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 interface InputProps {
   label: string;
   id: string;
@@ -35,6 +37,13 @@ const Input = ({
   value,
   disabled = false,
 }: InputProps) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    setIsError(!!errorMsg);
+  }, [errorMsg]);
+
   return (
     <div>
       <label className="block text-lg" htmlFor={id}>
@@ -48,7 +57,7 @@ const Input = ({
       <input
         disabled={disabled}
         className={`w-full rounded-md py-4 px-2 text-slate-900 text-white ${
-          errorMsg ? "border-red-500" : "border-slate-300"
+          errorMsg && isError ? "border-red-500" : "border-slate-300"
         } border-2`}
         type={type}
         name={id}
@@ -58,13 +67,21 @@ const Input = ({
         minLength={minLength}
         min={min}
         max={max}
+        onBlur={() => {
+          setIsFocused(false);
+        }}
+        onFocus={() => {
+          setIsFocused(true);
+          console.log("lll");
+        }}
         onChange={(e) => {
+          setIsError(false);
           onChange?.(e.target.name, e.target.value);
         }}
         defaultValue={value ?? ""}
       />
       <div className="min-h-8 mt-1">
-        {errorMsg && (
+        {isError && !isFocused && (
           <span className="text-red-500 text-sm block ">{errorMsg}</span>
         )}
       </div>

@@ -43,13 +43,3 @@ export const formDataSchema = z.object({
   ...stepTwoSchema.shape,
   ...stepThreeSchema.shape,
 });
-
-/**
- *
- */
-export type InitFormDataType = z.infer<typeof initFormDataSchema>;
-
-/**
- *
- */
-export type FormDataType = z.infer<typeof formDataSchema>;

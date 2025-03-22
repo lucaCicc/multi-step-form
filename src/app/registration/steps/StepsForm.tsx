@@ -1,16 +1,14 @@
 "use client";
 
-import { stepOneFormAction as oneAction } from "@/app/registration/steps/actions/stepOneFormAction";
-import { stepTwoFormAction as twoAction } from "@/app/registration/steps/actions/stepTwoFormActiont";
-import { stepThreeFormAction as threeAction } from "@/app/registration/steps/actions/stepThreeFormActiont";
-
 import { useFormDataProvider } from "@/providers/FormProvider";
-import { useActionState, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Form from "@/components/form/Form";
 import FormReview from "@/components/form/FormReview";
 import { submitAction } from "@/app/registration/steps/actions/submitActions";
-import { isSubmitError } from "@/types";
+import { FormErrors, InitFormDataType, isSubmitError } from "@/types";
+import { useFormActionsState } from "@/app/registration/hooks/useFormActionsState";
+import toast from "react-hot-toast";
 
 /**
  * Steps Form
@@ -18,36 +16,33 @@ import { isSubmitError } from "@/types";
  */
 const StepsForm = () => {
   const formDataProvider = useFormDataProvider();
-
-  const currentStep = formDataProvider?.step;
-
-  const [formOne, formActionOne, isFormOnePending] = useActionState(
-    oneAction,
-    undefined
-  );
-
-  const [formTwo, formActionTwo, isFormTwoPending] = useActionState(
-    twoAction,
-    undefined
-  );
-
-  const [formThree, formActionThree, isFormThreePending] = useActionState(
-    threeAction,
-    undefined
-  );
-
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<FormErrors | undefined>();
 
+  const { currentStep, updateData, updateStep } = formDataProvider ?? {};
+
+  const {
+    formOne,
+    formTwo,
+    formThree,
+    formActionOne,
+    formActionTwo,
+    formActionThree,
+    isFormOnePending,
+    isFormTwoPending,
+    isFormThreePending,
+  } = useFormActionsState();
+
+  /**
+   *
+   */
   useEffect(() => {
     if (currentStep === 1 && formOne?.isSuccess && !isFormOnePending)
-      formDataProvider?.updateStep(2);
-
+      updateStep?.(2);
     if (currentStep === 2 && formTwo?.isSuccess && !isFormTwoPending)
-      formDataProvider?.updateStep(3);
-
+      updateStep?.(3);
     if (currentStep === 3 && formThree?.isSuccess && !isFormThreePending)
-      formDataProvider?.updateStep(4);
-
+      updateStep?.(4);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     formOne?.isSuccess,
@@ -58,25 +53,39 @@ const StepsForm = () => {
     isFormTwoPending,
   ]);
 
+  /**
+   *
+   */
   const handleFormSubmit = async () => {
     setIsLoading(true);
-    const res = await submitAction(formDataProvider?.dataForm);
-    setIsLoading(false);
-    if (isSubmitError(res)) {
-      formDataProvider?.updateStep(res.step);
-    }
+
+    submitAction(formDataProvider?.dataForm)
+      .then((resp) => {
+        if (isSubmitError(resp)) {
+          setErrors(resp.messages);
+          updateStep?.(resp.step);
+        } else {
+          toast.success("Submitted successfully");
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
+      .catch(console.error);
   };
 
   /**
    *
    */
-  const onChange = useCallback(
-    (name: string, value: string) => {
-      formDataProvider?.updateData({
-        [name]: value,
-      });
+  const onChangeTextInput = useCallback(
+    (key: string, value: string) => {
+      const _key = key as keyof InitFormDataType;
+      setErrors((errors) => ({ ...errors, [_key]: undefined }));
+
+      const newData = { [_key]: value };
+      updateData?.(newData);
     },
-    [formDataProvider]
+    [updateData]
   );
 
   /**
@@ -85,29 +94,33 @@ const StepsForm = () => {
    */
   return (
     <>
-      {/** Step 1 */}
+      {/** Step 1 **/}
       <Form
         show={currentStep === 1}
         isLoading={isFormOnePending}
-        submitLabel="Continue"
+        submitLabel="Next"
         inputs={[
           {
             id: "name",
             label: "Name",
             type: "text",
-            onChange,
+            onChange: onChangeTextInput,
             required: true,
             description: "",
-            errorMsg: isFormOnePending ? undefined : formOne?.errors?.name,
+            errorMsg: isFormOnePending
+              ? undefined
+              : formOne?.errors?.name ?? errors?.name,
             value: formDataProvider?.dataForm["name"],
           },
           {
             id: "surname",
             label: "Surname",
             type: "text",
-            onChange,
+            onChange: onChangeTextInput,
             required: true,
-            errorMsg: isFormOnePending ? undefined : formOne?.errors?.surname,
+            errorMsg: isFormOnePending
+              ? undefined
+              : formOne?.errors?.surname ?? errors?.surname,
             value: formDataProvider?.dataForm["surname"],
             description: "",
           },
@@ -115,69 +128,75 @@ const StepsForm = () => {
         action={formActionOne}
       />
 
-      {/** Step 2 */}
+      {/** Step 2 **/}
       <Form
         show={currentStep === 2}
-        submitLabel="Continue"
+        submitLabel="Next"
         isLoading={isFormTwoPending}
         inputs={[
           {
             id: "birthday",
             label: "Birthday",
             type: "text",
-            onChange,
+            onChange: onChangeTextInput,
             required: true,
             description: "YYYY-MM-DD",
-            errorMsg: isFormTwoPending ? undefined : formTwo?.errors?.birthday,
+            errorMsg: isFormTwoPending
+              ? undefined
+              : formTwo?.errors?.birthday ?? errors?.birthday,
             value: formDataProvider?.dataForm["birthday"],
           },
           {
             id: "country",
             label: "Country",
             type: "text",
-            onChange,
+            onChange: onChangeTextInput,
             required: true,
             description: "",
-            errorMsg: isFormTwoPending ? undefined : formTwo?.errors?.country,
+            errorMsg: isFormTwoPending
+              ? undefined
+              : formTwo?.errors?.country ?? errors?.country,
             value: String(formDataProvider?.dataForm["country"] ?? ""),
           },
         ]}
         action={formActionTwo}
       />
 
-      {/** Step 3 */}
+      {/** Step 3 **/}
       <Form
         isLoading={isFormThreePending}
-        submitLabel="Continue"
+        submitLabel="Next"
         show={currentStep === 3}
         inputs={[
           {
             id: "phoneNumber",
             label: "Phone number",
             type: "text",
-            onChange,
+            onChange: onChangeTextInput,
             required: true,
             description: "",
             errorMsg: isFormThreePending
               ? undefined
-              : formThree?.errors?.phoneNumber,
+              : formThree?.errors?.phoneNumber ?? errors?.phoneNumber,
             value: formDataProvider?.dataForm["phoneNumber"],
           },
           {
             id: "email",
-            label: "Contact Email",
+            label: "Email",
             type: "email",
-            onChange,
+            onChange: onChangeTextInput,
             required: true,
             description: "",
             value: formDataProvider?.dataForm["email"],
-            errorMsg: isFormThreePending ? undefined : formThree?.errors?.email,
+            errorMsg: isFormThreePending
+              ? undefined
+              : formThree?.errors?.email ?? errors?.email,
           },
         ]}
         action={formActionThree}
       />
 
-      {/** Review */}
+      {/** Review **/}
       <FormReview
         show={currentStep === 4}
         action={handleFormSubmit}

@@ -1,3 +1,15 @@
+import { formDataSchema, initFormDataSchema } from "@/schemas";
+import { z } from "zod";
+
+/**
+ *
+ */
+export type InitFormDataType = z.infer<typeof initFormDataSchema>;
+
+/**
+ *
+ */
+export type FormDataType = z.infer<typeof formDataSchema>;
 export interface FormErrors {
   [key: string]: string | undefined;
 }
@@ -14,6 +26,7 @@ export enum MainRoutes {
 interface SubmitActionReturnErrorType {
   isError: true;
   step: number;
+  messages: FormErrors;
 }
 
 interface SubmitActionReturnSuccessType {
@@ -32,5 +45,5 @@ export const isSubmitError = (
 export interface Step {
   title: string;
   step: number;
-  // link: MainRoutes;
+  description: string;
 }

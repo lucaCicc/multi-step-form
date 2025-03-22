@@ -7,6 +7,8 @@ import { DefaultHeader } from "@/components/headers/DefaultHeader";
 import { ContentWrapper } from "@/components/wrappers/ContentWrapper";
 import { StepNavigation } from "@/components/navigations/StepNavigation";
 import { FormProvider } from "@/providers/FormProvider";
+import { Step } from "@/types";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Multi Step",
@@ -16,18 +18,26 @@ interface Pros {
   readonly children: ReactNode;
 }
 
-const steps = [
+const steps: Step[] = [
   {
-    title: "Step One",
+    title: "1",
+    description: "One",
     step: 1,
   },
   {
-    title: "Step Two",
+    title: "2",
+    description: "Two",
     step: 2,
   },
   {
-    title: "Step Three",
+    title: "3",
+    description: "Three",
     step: 3,
+  },
+  {
+    title: "4",
+    description: "Review",
+    step: 4,
   },
 ];
 
@@ -45,6 +55,7 @@ export default function RootLayout({ children }: Pros) {
 
         <ContentWrapper navigation={<StepNavigation steps={steps} />}>
           {children}
+          <Toaster />
         </ContentWrapper>
       </Main>
     </FormProvider>

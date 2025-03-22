@@ -1,6 +1,6 @@
 import { SubmitButton } from "@/components/buttons/SubmitButton";
 import { Input } from "@/components/inputs/DefaultInput";
-import { InitFormDataType } from "@/schemas";
+import { InitFormDataType } from "@/types";
 
 interface Input {
   id: string;

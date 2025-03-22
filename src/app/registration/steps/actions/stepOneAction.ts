@@ -5,19 +5,19 @@ import { FormResponse } from "@/types";
 import { getFormErrosInfo } from "@/utils";
 
 /**
- *
+ * StepOne Action
  *
  */
-export const stepOneFormAction = async (
+export const stepOnection = async (
   _: FormResponse | undefined,
   formData: FormData
 ): Promise<FormResponse | undefined> => {
-  console.info("stepOneFormAction");
+  console.info("Action => stepOneForm");
 
   return new Promise((resolve) => {
     setTimeout(() => {
       const data = Object.fromEntries(formData.entries());
-      console.log("data", data);
+
       const validated = stepOneSchema.safeParse(data);
 
       if (!validated.success) {
@@ -32,6 +32,6 @@ export const stepOneFormAction = async (
       resolve({
         isSuccess: true,
       });
-    }, 2000);
+    }, 500);
   });
 };
