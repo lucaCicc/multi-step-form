@@ -25,7 +25,7 @@ interface Props {
  *
  */
 const FormReview = ({
-  inputs,
+  inputs = {},
   action,
   show,
   isLoading,
@@ -35,16 +35,16 @@ const FormReview = ({
 
   return (
     <div className="flex flex-1 flex-col gap-2 items-stretch lg:max-w-[700px]">
-      {Object.entries(inputs ?? {}).map(([key, value]) => (
+      {Object.entries(inputs).map(([key, value]) => (
         <Input
+          id={key}
           key={key}
           label={key}
-          id={key}
-          disabled={true}
           type={"text"}
+          value={value}
+          disabled={true}
           required={false}
           description={""}
-          value={value}
         />
       ))}
 

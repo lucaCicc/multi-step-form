@@ -5,7 +5,7 @@ import { Step } from "@/types";
 import clsx from "clsx";
 
 interface Props {
-  readonly steps: Step[];
+  steps: Step[];
 }
 /**
  *

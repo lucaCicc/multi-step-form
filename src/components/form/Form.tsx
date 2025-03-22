@@ -31,15 +31,15 @@ const Forms = ({ inputs, action, show, isLoading, submitLabel }: Props) => {
       <div className="flex w-full flex-col gap-8 lg:max-w-[700px]">
         {inputs.map((input) => (
           <Input
-            key={input.id}
-            label={input.label}
             id={input.id}
+            key={input.id}
             type={input.type}
-            required={input.required}
-            description={input.description}
-            errorMsg={input.errorMsg}
             value={input.value}
+            label={input.label}
+            required={input.required}
             onChange={input.onChange}
+            errorMsg={input.errorMsg}
+            description={input.description}
           />
         ))}
         <SubmitButton text={submitLabel} isLoading={isLoading} />

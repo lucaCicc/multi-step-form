@@ -1,6 +1,6 @@
-import { stepOnection } from "@/app/registration/steps/actions/stepOneAction";
-import { stepThreeAction } from "@/app/registration/steps/actions/stepThreeActiont";
-import { stepTwoAction } from "@/app/registration/steps/actions/stepTwoActiont";
+import { stepOnection } from "@/app/form/steps/actions/stepOneAction";
+import { stepThreeAction } from "@/app/form/steps/actions/stepThreeActiont";
+import { stepTwoAction } from "@/app/form/steps/actions/stepTwoActiont";
 import { useActionState } from "react";
 
 /**

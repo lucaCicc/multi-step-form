@@ -1,4 +1,4 @@
-import { StepsForm } from "@/app/registration/steps/StepsForm";
+import { StepsForm } from "@/app/form/steps/StepsForm";
 import React from "react";
 
 /**

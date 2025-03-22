@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 
 interface Pros {
-  readonly children: ReactNode;
-  readonly navigation: ReactNode;
+  children: ReactNode;
+  navigation: ReactNode;
 }
 
 /**
- * Main
+ *
  *
  */
 const ContentWrapper: React.FC<Pros> = ({ children, navigation }) => {

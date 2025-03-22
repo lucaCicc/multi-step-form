@@ -5,10 +5,15 @@ import { useCallback, useEffect, useState } from "react";
 
 import Form from "@/components/form/Form";
 import FormReview from "@/components/form/FormReview";
-import { submitAction } from "@/app/registration/steps/actions/submitActions";
-import { FormErrors, InitFormDataType, isSubmitError } from "@/types";
-import { useFormActionsState } from "@/app/registration/hooks/useFormActionsState";
+import {
+  FormErrors,
+  InitFormDataType,
+  isSubmitError,
+  StepsEnum,
+} from "@/types";
 import toast from "react-hot-toast";
+import { useFormActionsState } from "@/app/form/hooks/useFormActionsState";
+import { submitAction } from "@/app/form/steps/actions/submitActions";
 
 /**
  * Steps Form
@@ -17,7 +22,7 @@ import toast from "react-hot-toast";
 const StepsForm = () => {
   const formDataProvider = useFormDataProvider();
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<FormErrors | undefined>();
+  const [formErrors, setFormErrors] = useState<FormErrors | undefined>();
 
   const { currentStep, updateData, updateStep } = formDataProvider ?? {};
 
@@ -34,6 +39,7 @@ const StepsForm = () => {
   } = useFormActionsState();
 
   /**
+   * Handle next step
    *
    */
   useEffect(() => {
@@ -54,6 +60,15 @@ const StepsForm = () => {
   ]);
 
   /**
+   * Clean form errors
+   *
+   */
+  const cleanFormErrors = useCallback((key: keyof InitFormDataType) => {
+    setFormErrors((errors) => ({ ...errors, [key]: undefined }));
+  }, []);
+
+  /**
+   * handle Submit
    *
    */
   const handleFormSubmit = async () => {
@@ -62,7 +77,7 @@ const StepsForm = () => {
     submitAction(formDataProvider?.dataForm)
       .then((resp) => {
         if (isSubmitError(resp)) {
-          setErrors(resp.messages);
+          setFormErrors(resp.messages);
           updateStep?.(resp.step);
         } else {
           toast.success("Submitted successfully");
@@ -80,12 +95,11 @@ const StepsForm = () => {
   const onChangeTextInput = useCallback(
     (key: string, value: string) => {
       const _key = key as keyof InitFormDataType;
-      setErrors((errors) => ({ ...errors, [_key]: undefined }));
 
-      const newData = { [_key]: value };
-      updateData?.(newData);
+      cleanFormErrors(_key);
+      updateData?.({ [_key]: value });
     },
-    [updateData]
+    [cleanFormErrors, updateData]
   );
 
   /**
@@ -96,7 +110,7 @@ const StepsForm = () => {
     <>
       {/** Step 1 **/}
       <Form
-        show={currentStep === 1}
+        show={currentStep === StepsEnum.STEP_ONE}
         isLoading={isFormOnePending}
         submitLabel="Next"
         inputs={[
@@ -109,7 +123,7 @@ const StepsForm = () => {
             description: "",
             errorMsg: isFormOnePending
               ? undefined
-              : formOne?.errors?.name ?? errors?.name,
+              : formOne?.errors?.name ?? formErrors?.name,
             value: formDataProvider?.dataForm["name"],
           },
           {
@@ -120,7 +134,7 @@ const StepsForm = () => {
             required: true,
             errorMsg: isFormOnePending
               ? undefined
-              : formOne?.errors?.surname ?? errors?.surname,
+              : formOne?.errors?.surname ?? formErrors?.surname,
             value: formDataProvider?.dataForm["surname"],
             description: "",
           },
@@ -130,7 +144,7 @@ const StepsForm = () => {
 
       {/** Step 2 **/}
       <Form
-        show={currentStep === 2}
+        show={currentStep === StepsEnum.STEP_TWO}
         submitLabel="Next"
         isLoading={isFormTwoPending}
         inputs={[
@@ -143,7 +157,7 @@ const StepsForm = () => {
             description: "YYYY-MM-DD",
             errorMsg: isFormTwoPending
               ? undefined
-              : formTwo?.errors?.birthday ?? errors?.birthday,
+              : formTwo?.errors?.birthday ?? formErrors?.birthday,
             value: formDataProvider?.dataForm["birthday"],
           },
           {
@@ -155,7 +169,7 @@ const StepsForm = () => {
             description: "",
             errorMsg: isFormTwoPending
               ? undefined
-              : formTwo?.errors?.country ?? errors?.country,
+              : formTwo?.errors?.country ?? formErrors?.country,
             value: String(formDataProvider?.dataForm["country"] ?? ""),
           },
         ]}
@@ -164,9 +178,9 @@ const StepsForm = () => {
 
       {/** Step 3 **/}
       <Form
+        show={currentStep === StepsEnum.STEP_THREE}
         isLoading={isFormThreePending}
         submitLabel="Next"
-        show={currentStep === 3}
         inputs={[
           {
             id: "phoneNumber",
@@ -177,7 +191,7 @@ const StepsForm = () => {
             description: "",
             errorMsg: isFormThreePending
               ? undefined
-              : formThree?.errors?.phoneNumber ?? errors?.phoneNumber,
+              : formThree?.errors?.phoneNumber ?? formErrors?.phoneNumber,
             value: formDataProvider?.dataForm["phoneNumber"],
           },
           {
@@ -190,7 +204,7 @@ const StepsForm = () => {
             value: formDataProvider?.dataForm["email"],
             errorMsg: isFormThreePending
               ? undefined
-              : formThree?.errors?.email ?? errors?.email,
+              : formThree?.errors?.email ?? formErrors?.email,
           },
         ]}
         action={formActionThree}
@@ -198,7 +212,7 @@ const StepsForm = () => {
 
       {/** Review **/}
       <FormReview
-        show={currentStep === 4}
+        show={currentStep === StepsEnum.STEP_REVIEW}
         action={handleFormSubmit}
         inputs={formDataProvider?.dataForm}
         isLoading={isLoading}
