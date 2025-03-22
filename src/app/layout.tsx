@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import QueryClientProvider from "@/providers/QueryClientProvider";
 
 import { ReactNode } from "react";
-import { MainRoutes } from "@/types";
-import { MirageInit } from "@/components/mirage/MirageInit";
 import { Main } from "@/components/wrappers/MainWrapper";
 import { DefaultHeader } from "@/components/headers/DefaultHeader";
 import { ContentWrapper } from "@/components/wrappers/ContentWrapper";
 import { StepNavigation } from "@/components/navigations/StepNavigation";
+import { FormProvider } from "@/providers/FormProvider";
 
 export const metadata: Metadata = {
   title: "Multi Step",
@@ -21,18 +19,15 @@ interface Pros {
 const steps = [
   {
     title: "Step One",
-    route: "step-one",
-    link: MainRoutes.STEP_ONE,
+    step: 1,
   },
   {
     title: "Step Two",
-    route: "step-two",
-    link: MainRoutes.STEP_TWO,
+    step: 2,
   },
   {
     title: "Step Three",
-    route: "step-three",
-    link: MainRoutes.STEP_THREE,
+    step: 3,
   },
 ];
 
@@ -44,9 +39,7 @@ const title = "Form";
  */
 export default function RootLayout({ children }: Pros) {
   return (
-    <QueryClientProvider>
-      <MirageInit />
-
+    <FormProvider>
       <Main>
         <DefaultHeader title={title} />
 
@@ -54,6 +47,6 @@ export default function RootLayout({ children }: Pros) {
           {children}
         </ContentWrapper>
       </Main>
-    </QueryClientProvider>
+    </FormProvider>
   );
 }

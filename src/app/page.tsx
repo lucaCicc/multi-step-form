@@ -6,5 +6,5 @@ import { redirect } from "next/navigation";
  *
  */
 export default function Home() {
-  redirect(MainRoutes.STEP_ONE);
+  redirect(MainRoutes.STEPS_FORM);
 }

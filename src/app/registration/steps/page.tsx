@@ -1,4 +1,4 @@
-import { StepOneForm } from "@/app/registration/step-one/StepOneForm";
+import { StepsForm } from "@/app/registration/steps/StepsForm";
 import React from "react";
 
 /**
@@ -8,7 +8,7 @@ import React from "react";
 export default function StepOne() {
   return (
     <div>
-      <StepOneForm />
+      <StepsForm />
     </div>
   );
 }
