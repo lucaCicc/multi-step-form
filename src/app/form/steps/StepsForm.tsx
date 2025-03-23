@@ -79,7 +79,7 @@ const StepsForm = () => {
    * handle Submit
    *
    */
-  const handleFormSubmit = useCallback(async () => {
+  const handleFormSubmit = useCallback(() => {
     setIsSubmitLoading(true);
 
     submitAction(dataForm)
