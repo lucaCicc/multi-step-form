@@ -35,7 +35,7 @@ const Forms = ({
 
   return (
     <form action={action} className="flex flex-1 flex-col items-center">
-      <div className="flex w-full flex-col gap-8 lg:max-w-[700px]">
+      <div className="flex w-full flex-col lg:max-w-[700px]">
         {inputs.map((input) => (
           <Input
             id={input.id}

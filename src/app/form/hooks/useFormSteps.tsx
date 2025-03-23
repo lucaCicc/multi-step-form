@@ -1,15 +1,8 @@
 import { useFormDataProvider } from "@/providers/FormProvider";
-import { FormResponse } from "@/types";
+import { FormActionsState } from "@/types";
 import { useMemo } from "react";
 
-interface Props {
-  formOne: FormResponse | undefined;
-  formTwo: FormResponse | undefined;
-  formThree: FormResponse | undefined;
-  isFormOnePending: boolean;
-  isFormTwoPending: boolean;
-  isFormThreePending: boolean;
-}
+type Props = FormActionsState;
 
 /**
  *
@@ -36,7 +29,7 @@ export const useFormSteps = ({
         type: "text",
         required: true,
         description: "",
-        errorMsg: isFormOnePending ? undefined : formOne?.errors?.name, //?? formErrors?.name,
+        errorMsg: isFormOnePending ? undefined : formOne?.errors?.name,
         value: formDataProvider?.dataForm["name"],
       },
       {
@@ -44,7 +37,7 @@ export const useFormSteps = ({
         label: "Surname",
         type: "text",
         required: true,
-        errorMsg: isFormOnePending ? undefined : formOne?.errors?.surname, // ?? formErrors?.surname,
+        errorMsg: isFormOnePending ? undefined : formOne?.errors?.surname,
         value: formDataProvider?.dataForm["surname"],
         description: "",
       },
@@ -67,7 +60,7 @@ export const useFormSteps = ({
         type: "text",
         required: true,
         description: "",
-        errorMsg: isFormTwoPending ? undefined : formTwo?.errors?.birthday, // ?? formErrors?.birthday,
+        errorMsg: isFormTwoPending ? undefined : formTwo?.errors?.birthday,
         value: formDataProvider?.dataForm["birthday"],
       },
       {
@@ -76,7 +69,7 @@ export const useFormSteps = ({
         type: "text",
         required: true,
         description: "",
-        errorMsg: isFormTwoPending ? undefined : formTwo?.errors?.country, // ?? formErrors?.country,
+        errorMsg: isFormTwoPending ? undefined : formTwo?.errors?.country,
         value: String(formDataProvider?.dataForm["country"] ?? ""),
       },
     ];
@@ -100,7 +93,7 @@ export const useFormSteps = ({
         description: "",
         errorMsg: isFormThreePending
           ? undefined
-          : formThree?.errors?.phoneNumber, // ?? formErrors?.phoneNumber,
+          : formThree?.errors?.phoneNumber,
         value: formDataProvider?.dataForm["phoneNumber"],
       },
       {
@@ -110,7 +103,7 @@ export const useFormSteps = ({
         required: true,
         description: "",
         value: formDataProvider?.dataForm["email"],
-        errorMsg: isFormThreePending ? undefined : formThree?.errors?.email, // ?? formErrors?.email,
+        errorMsg: isFormThreePending ? undefined : formThree?.errors?.email,
       },
     ];
   }, [

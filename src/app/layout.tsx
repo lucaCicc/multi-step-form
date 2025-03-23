@@ -26,7 +26,7 @@ export default function RootLayout({ children }: Pros) {
   return (
     <FormProvider>
       <Main>
-        <DefaultHeader title={"Personal info"} />
+        <DefaultHeader title={"Form"} subtitle={"Personal info"} />
 
         <ContentWrapper navigation={<StepNavigation steps={navigationSteps} />}>
           {children}

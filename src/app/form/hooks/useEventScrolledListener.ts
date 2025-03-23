@@ -4,7 +4,7 @@ import { useEffect } from "react";
  *
  *
  */
-export const useEventListenerScrolled = (
+export const useEventScrolledListener = (
   elem: HTMLDivElement | null,
   callback: () => void
 ) => {

@@ -12,7 +12,7 @@ export const stepOneSchema = z.object({
  *
  */
 export const stepTwoSchema = z.object({
-  birthday: z.string().date("Date mist be YYYY-MM-DD"),
+  birthday: z.string().date("Date must be YYYY-MM-DD"),
   country: z.string().min(2, "Country must be at least 2"),
 });
 

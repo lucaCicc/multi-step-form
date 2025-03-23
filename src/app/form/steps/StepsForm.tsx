@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormDataProvider } from "@/providers/FormProvider";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import Form from "@/components/form/Form";
 import FormReview from "@/components/form/FormReview";
@@ -9,19 +9,20 @@ import { InitFormDataType, isSubmitError, Steps } from "@/types";
 import toast from "react-hot-toast";
 import { useFormActionsState } from "@/app/form/hooks/useFormActionsState";
 import { submitAction } from "@/app/form/steps/actions/submitActions";
-import { useEventListenerScrolled } from "@/hooks/useEventListenerScrolled";
 import { Slider, SliderItem } from "@/components/slider/Slider";
 import { useFormSteps } from "@/app/form/hooks/useFormSteps";
+import { useNextStepListener } from "@/app/form/hooks/useNextStepListener";
+import { useEventScrolledListener } from "@/app/form/hooks/useEventScrolledListener";
 
 /**
  * Steps Form
  *
  */
 const StepsForm = () => {
-  const sliderRef = useRef<HTMLDivElement>(null);
-
-  const [show, setShow] = useState(false);
+  const [showSlider, setShowSlider] = useState(false);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   const formActionsState = useFormActionsState();
 
@@ -31,14 +32,11 @@ const StepsForm = () => {
   const { currentStep, updateStep, dataForm, updateData } =
     useFormDataProvider() ?? {};
 
-  useEventListenerScrolled(sliderRef?.current, () => {
-    setShow(false);
+  useEventScrolledListener(sliderRef?.current, () => {
+    setShowSlider(false);
   });
 
   const {
-    formOne,
-    formTwo,
-    formThree,
     formActionOne,
     formActionTwo,
     formActionThree,
@@ -50,9 +48,8 @@ const StepsForm = () => {
   /**
    *
    */
-  const scrollLeft = useCallback(() => {
+  const scrollSliderLeft = useCallback(() => {
     const { width } = sliderRef?.current?.getBoundingClientRect?.() ?? {};
-
     sliderRef?.current?.scrollBy?.({ left: width, behavior: "smooth" });
   }, []);
 
@@ -62,51 +59,21 @@ const StepsForm = () => {
    */
   const handleNextStep = useCallback(
     (nextStep: Steps) => {
-      setShow(true);
+      setShowSlider(true);
 
       setTimeout(() => {
-        scrollLeft();
+        scrollSliderLeft();
         updateStep?.(nextStep);
       }, 0);
     },
-    [scrollLeft, updateStep]
+    [scrollSliderLeft, updateStep]
   );
 
-  /**
-   * Handle next step
-   *
-   */
-  useEffect(() => {
-    if (
-      currentStep === Steps.STEP_ONE &&
-      formOne?.isSuccess &&
-      !isFormOnePending
-    ) {
-      handleNextStep(Steps.STEP_TWO);
-    }
-    if (
-      currentStep === Steps.STEP_TWO &&
-      formTwo?.isSuccess &&
-      !isFormTwoPending
-    ) {
-      handleNextStep(Steps.STEP_THREE);
-    }
-    if (
-      currentStep === Steps.STEP_THREE &&
-      formThree?.isSuccess &&
-      !isFormThreePending
-    ) {
-      handleNextStep(Steps.STEP_REVIEW);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    formOne?.isSuccess,
-    formTwo?.isSuccess,
-    formThree?.isSuccess,
-    isFormThreePending,
-    isFormOnePending,
-    isFormTwoPending,
-  ]);
+  useNextStepListener({
+    formActionsState,
+    currentStep,
+    handleNextStep,
+  });
 
   /**
    * handle Submit
@@ -118,10 +85,10 @@ const StepsForm = () => {
     submitAction(dataForm)
       .then((resp) => {
         if (isSubmitError(resp)) {
-          updateStep?.(resp.step);
-        } else {
-          toast.success("Submitted successfully");
+          return updateStep?.(resp.step);
         }
+
+        toast.success("Submitted successfully “🎉🎉🎉");
       })
       .finally(() => {
         setIsSubmitLoading(false);
@@ -145,22 +112,23 @@ const StepsForm = () => {
    * Renders
    *
    */
-  if (Steps.STEP_REVIEW === currentStep) {
-    return (
-      <FormReview
-        show={true}
-        action={handleFormSubmit}
-        inputs={dataForm}
-        isLoading={isSubmitLoading}
-        submitLabel="Submit"
-      />
-    );
-  }
 
-  return (
+  return Steps.STEP_REVIEW === currentStep ? (
+    <FormReview
+      show={true}
+      action={handleFormSubmit}
+      inputs={dataForm}
+      isLoading={isSubmitLoading}
+      submitLabel="Submit"
+    />
+  ) : (
     <Slider ref={sliderRef}>
       {/** STEP ONE **/}
-      <SliderItem currentStep={currentStep} show={show} id={Steps.STEP_ONE}>
+      <SliderItem
+        currentStep={currentStep}
+        show={showSlider}
+        id={Steps.STEP_ONE}
+      >
         <Form
           show={true}
           submitLabel="Next"
@@ -172,7 +140,11 @@ const StepsForm = () => {
       </SliderItem>
 
       {/** STEP TWO **/}
-      <SliderItem currentStep={currentStep} show={show} id={Steps.STEP_TWO}>
+      <SliderItem
+        currentStep={currentStep}
+        show={showSlider}
+        id={Steps.STEP_TWO}
+      >
         <Form
           show={true}
           submitLabel="Next"
@@ -184,7 +156,11 @@ const StepsForm = () => {
       </SliderItem>
 
       {/** STEP THREE **/}
-      <SliderItem currentStep={currentStep} show={show} id={Steps.STEP_THREE}>
+      <SliderItem
+        currentStep={currentStep}
+        show={showSlider}
+        id={Steps.STEP_THREE}
+      >
         <Form
           show={true}
           submitLabel="Next"

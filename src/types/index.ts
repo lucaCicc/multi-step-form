@@ -42,6 +42,18 @@ export enum MainRoutes {
   STEPS_FORM = "/form/steps",
 }
 
+export interface FormActionsState {
+  formOne: FormResponse | undefined;
+  formTwo: FormResponse | undefined;
+  formThree: FormResponse | undefined;
+  formActionOne: (payload: FormData) => void;
+  formActionTwo: (payload: FormData) => void;
+  formActionThree: (payload: FormData) => void;
+  isFormOnePending: boolean;
+  isFormTwoPending: boolean;
+  isFormThreePending: boolean;
+}
+
 export enum Steps {
   STEP_ONE = 1,
   STEP_TWO = 2,

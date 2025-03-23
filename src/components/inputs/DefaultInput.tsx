@@ -55,7 +55,7 @@ const Input = ({
         )}
       </label>
       <input
-        className={`w-full rounded-md py-4 px-2 text-slate-900 text-white ${
+        className={`w-full rounded-md py-4 px-2 text-slate-900 text-white focus:border-teal-500 outline-none ${
           errorMsg && isError ? "border-red-500" : "border-slate-300"
         } border-2`}
         id={id}
