@@ -18,17 +18,18 @@ import { useFormSteps } from "@/app/form/hooks/useFormSteps";
  *
  */
 const StepsForm = () => {
-  const formDataProvider = useFormDataProvider();
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const [show, setShow] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const formActionsState = useFormActionsState();
-  const { currentStep, updateData, updateStep } = formDataProvider ?? {};
 
   const { inputStepsOne, inputStepsTwo, inputStepsThree } =
     useFormSteps(formActionsState);
+
+  const { currentStep, updateStep, dataForm, updateData } =
+    useFormDataProvider() ?? {};
 
   useEventListenerScrolled(sliderRef?.current, () => {
     setShow(false);
@@ -112,9 +113,9 @@ const StepsForm = () => {
    *
    */
   const handleFormSubmit = useCallback(async () => {
-    setIsLoading(true);
+    setIsSubmitLoading(true);
 
-    submitAction(formDataProvider?.dataForm)
+    submitAction(dataForm)
       .then((resp) => {
         if (isSubmitError(resp)) {
           updateStep?.(resp.step);
@@ -123,10 +124,10 @@ const StepsForm = () => {
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsSubmitLoading(false);
       })
       .catch(console.error);
-  }, [formDataProvider?.dataForm, updateStep]);
+  }, [dataForm, updateStep]);
 
   /**
    *
@@ -149,8 +150,8 @@ const StepsForm = () => {
       <FormReview
         show={true}
         action={handleFormSubmit}
-        inputs={formDataProvider?.dataForm}
-        isLoading={isLoading}
+        inputs={dataForm}
+        isLoading={isSubmitLoading}
         submitLabel="Submit"
       />
     );

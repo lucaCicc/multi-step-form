@@ -24,7 +24,7 @@ interface Props {
  *
  */
 const Forms = ({
-  inputs,
+  inputs = [],
   action,
   show,
   isLoading,
