@@ -9,11 +9,11 @@ interface Input {
   description: string;
   errorMsg: string | undefined;
   value: string | undefined;
-  onChange: (name: string, value: string) => void;
 }
 
 interface Props {
   action: (payload: FormData) => void;
+  onChange: (name: string, value: string) => void;
   inputs: Input[];
   show: boolean;
   isLoading: boolean;
@@ -23,7 +23,14 @@ interface Props {
  *
  *
  */
-const Forms = ({ inputs, action, show, isLoading, submitLabel }: Props) => {
+const Forms = ({
+  inputs,
+  action,
+  show,
+  isLoading,
+  submitLabel,
+  onChange,
+}: Props) => {
   if (!show) return;
 
   return (
@@ -37,7 +44,7 @@ const Forms = ({ inputs, action, show, isLoading, submitLabel }: Props) => {
             value={input.value}
             label={input.label}
             required={input.required}
-            onChange={input.onChange}
+            onChange={onChange}
             errorMsg={input.errorMsg}
             description={input.description}
           />

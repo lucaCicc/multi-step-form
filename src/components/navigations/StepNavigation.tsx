@@ -24,7 +24,7 @@ const StepNavigation = ({ steps }: Props) => {
           <button
             key={step.step}
             className="group z-20 flex items-center gap-3 text-2xl"
-            onClick={() => formDataProvider?.updateStep(step.step)}
+            // onClick={() => formDataProvider?.updateStep(step.step)}
           >
             <span
               className={clsx(

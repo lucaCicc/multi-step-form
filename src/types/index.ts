@@ -34,7 +34,7 @@ export const isSubmitError = (
 
 export interface Step {
   title: string;
-  step: number;
+  step: Steps;
   description: string;
 }
 
@@ -42,7 +42,7 @@ export enum MainRoutes {
   STEPS_FORM = "/form/steps",
 }
 
-export enum StepsEnum {
+export enum Steps {
   STEP_ONE = 1,
   STEP_TWO = 2,
   STEP_THREE = 3,

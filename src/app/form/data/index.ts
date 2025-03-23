@@ -1,24 +1,24 @@
-import { Step, StepsEnum } from "@/types";
+import { Step, Steps } from "@/types";
 
 export const navigationSteps: Step[] = [
   {
     title: "1",
     description: "One",
-    step: StepsEnum.STEP_ONE,
+    step: Steps.STEP_ONE,
   },
   {
     title: "2",
     description: "Two",
-    step: StepsEnum.STEP_TWO,
+    step: Steps.STEP_TWO,
   },
   {
     title: "3",
     description: "Three",
-    step: StepsEnum.STEP_THREE,
+    step: Steps.STEP_THREE,
   },
   {
     title: "4",
     description: "Review",
-    step: StepsEnum.STEP_REVIEW,
+    step: Steps.STEP_REVIEW,
   },
 ];

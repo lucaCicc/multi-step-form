@@ -1,6 +1,6 @@
 "use client";
 
-import { FormDataType, InitFormDataType } from "@/types";
+import { FormDataType, InitFormDataType, Steps } from "@/types";
 import {
   createContext,
   useCallback,
@@ -26,10 +26,9 @@ interface IFormProvider {
 
 interface IFormContext {
   dataForm: InitFormDataType;
-  updateData: (newValues: Partial<FormDataType>) => void;
   currentStep: number;
-  nextStep: () => void;
-  updateStep: (step: number) => void;
+  updateData: (newValues: Partial<FormDataType>) => void;
+  updateStep: (step: Steps) => void;
 }
 
 /**
@@ -37,7 +36,7 @@ interface IFormContext {
  */
 export const FormProvider = ({ children }: IFormProvider) => {
   const [dataForm, setDataForm] = useState<InitFormDataType>(initFormData);
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(Steps.STEP_ONE);
 
   /**
    *
@@ -49,14 +48,7 @@ export const FormProvider = ({ children }: IFormProvider) => {
   /**
    *
    */
-  const nextStep = useCallback(() => {
-    setCurrentStep((step) => step + 1);
-  }, []);
-
-  /**
-   *
-   */
-  const updateStep = useCallback((step: number) => {
+  const updateStep = useCallback((step: Steps) => {
     setCurrentStep(step);
   }, []);
 
@@ -68,10 +60,9 @@ export const FormProvider = ({ children }: IFormProvider) => {
       dataForm,
       updateData,
       currentStep,
-      nextStep,
       updateStep,
     }),
-    [dataForm, updateData, currentStep, nextStep, updateStep]
+    [dataForm, updateData, currentStep, updateStep]
   );
 
   /**
